@@ -1,41 +1,83 @@
-# Pokémon Story Generator Test Project
+# Pokémon Story Generator API
 
-## Objective
-
-This test project challenges developers to build a Node.js application that integrates the Pokémon API (PokeAPI) and OpenAI API to create a Pokémon-themed story generator. Developers must implement all core functionality based on the outlined requirements.
+A **Node.js + Fastify** backend that combines the [PokeAPI](https://pokeapi.co/docs/v2) and OpenAI API to generate funny, themed Pokémon stories.
 
 ---
 
-## Features to Implement
+## 📦 Tech Stack
 
-1. **Fetch Pokémon Data**:
-   - Create a route to fetch Pokémon details (name, types, abilities, and an image) from the PokeAPI.
+- **Fastify** – Fast, low overhead web framework  
+- **OpenAI API** – Generates stories using Pokémon data and user themes  
+- **PokeAPI** – Retrieves Pokémon details (name, abilities, etc.)  
+  ⚠️ *Note: Image support not included in this version*  
+- **Custom Middleware** – IP rate limiting (100 requests per 15 minutes), request logging  
+- **dotenv** – Loads environment variables from `.env`
 
-2. **Generate Pokémon Stories**:
-   - Create a route to generate creative stories based on a Pokémon and a user-provided theme using the OpenAI API.
+### 📁 Project Structure
 
-## Bonus Objectives
-
-3. **Caching**:
-   - Implement a caching layer to reduce redundant API calls to the PokeAPI. This will optimize performance for frequently requested Pokémon.
-
-4. **Input Validation**:
-   - Ensure inputs (Pokémon name and theme) are validated. For example, check that the Pokémon name is a non-empty string.
-
-5. **Request Logging**:
-   - Create middleware to log incoming requests and responses for debugging and monitoring purposes.
-
-6. **Rate Limiting**:
-   - Implement rate limiting to prevent abuse of the API endpoints.
-
-7. **Testing**:
-   - Write unit tests for the routes to ensure functionality and reliability.
-
-8. **Documentation**:
-   - Add comments to your code and include details in the README about how caching, validation, and rate-limiting mechanisms are implemented.
+```
+/routes         → API route definitions (/story, /pokemon)
+/services       → Logic for PokeAPI + OpenAI integration
+/middleware     → Rate limiting & logging middleware
+index.js        → Fastify server entry point
+.env            → Stores OPENAI_API_KEY
+```
 
 ---
 
-## PokeAPI documentation
+## 🔧 Backend Setup
 
-https://pokeapi.co/docs/v2
+1. **Clone the repository**
+
+```bash
+git clone https://github.com/yourname/test-app.git
+cd test-app
+```
+
+2. **Install dependencies**
+
+```bash
+npm install
+```
+
+3. **Create a `.env` file with your OpenAI API key**
+
+```bash
+echo "OPENAI_API_KEY=your-openai-api-key" > .env
+```
+
+4. **Start the server**
+
+```bash
+node index.js
+```
+
+5. **Test the API with cURL**
+
+```bash
+curl -X POST http://localhost:3000/story \
+  -H "Content-Type: application/json" \
+  -d '{"name": "pikachu", "theme": "space adventure"}'
+```
+
+---
+
+## 🌐 Optional: Frontend Setup (Vite + React)
+
+The companion frontend is located in the `/ui` directory.
+
+```bash
+cd ui
+npm install
+npm run dev
+```
+
+---
+
+## 📚 API Reference
+
+- [PokeAPI Docs](https://pokeapi.co/docs/v2)
+
+---
+
+Created by **John Adams**
