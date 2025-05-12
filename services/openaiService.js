@@ -1,0 +1,18 @@
+// services/openaiService.js
+import dotenv from 'dotenv'
+dotenv.config()
+
+import OpenAI from 'openai'
+
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
+
+export async function generatePokemonStory(pokemon, theme) {
+  const prompt = `Write a short and funny story featuring the Pokémon ${pokemon.name}. Include its abilities (${pokemon.abilities.join(", ")}) and base the story on this theme: ${theme}.`
+
+  const response = await openai.chat.completions.create({
+    messages: [{ role: 'user', content: prompt }],
+    model: 'gpt-3.5-turbo'
+  })
+
+  return response.choices[0]?.message?.content
+}

@@ -1,28 +1,42 @@
-const express = require('express');
-const axios = require('axios');
-const { Configuration, OpenAIApi } = require('openai');
+// index.js
+// Core server + plugins
+import Fastify from 'fastify'
+import dotenv from 'dotenv'
+import cors from '@fastify/cors'
 
-require('dotenv').config();
+// Route modules
+import { registerRootRoute } from './routes/root.js'
+import { registerPokemonRoutes } from './routes/pokemon.js'
+import { registerStoryRoutes } from './routes/story.js'
 
-const app = express();
-const PORT = process.env.PORT || 3000;
+// Middleware
+import rateLimit from './middleware/rateLimit.js'
+import logger from './middleware/logger.js'
 
-// Middleware to parse JSON
-app.use(express.json());
+// Load .env environment variables (e.g. OPENAI_API_KEY)
+dotenv.config()
 
-// Placeholder for Pokémon data fetching route
-// TODO: Implement a route to fetch Pokémon data using the PokeAPI
+// Create a Fastify instance with built-in logger enabled
+const fastify = Fastify({ logger: true })
 
-// Placeholder for story generation route
-// TODO: Implement a route to generate a story using OpenAI API
+// Register middleware
+await fastify.register(rateLimit)
+await fastify.register(logger)
 
-// Additional Objectives:
-// TODO: Implement a caching layer to reduce redundant API calls to the PokeAPI.
-// TODO: Add input validation to ensure the Pokémon name and theme are valid strings.
-// TODO: Create a logging middleware to log requests and responses for debugging purposes.
-// TODO: Implement rate limiting to prevent abuse of the API endpoints.
+// Allow CORS for frontend (Vite dev server will hit this)
+await fastify.register(cors, {
+  origin: true
+})
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+// Register application routes
+registerRootRoute(fastify)
+registerPokemonRoutes(fastify)
+registerStoryRoutes(fastify)
+
+// Start the server on port 3000
+fastify.listen({ port: 3000 }, err => {
+  if (err) {
+    fastify.log.error(err)
+    process.exit(1)
+  }
+})
